@@ -36,7 +36,7 @@ public class AdvRoom extends AdvRoomStub {
 	 * @return The room number
 	 */
 	public int getRoomNumber() {
-		return super.getRoomNumber(); // Replace with your code
+		return number;
 	}
 
 	/* Method: getName() */
@@ -173,8 +173,34 @@ public class AdvRoom extends AdvRoomStub {
 	 * @return a room if successfully read; null if at end of file
 	 */
 	public static AdvRoom readFromFile(Scanner scan) {
-		return AdvRoomStub.readFromFile(scan); // Replace with your code
+		AdvRoom question = new AdvRoom();
+		// read the data for the question
+		question.number = scan.nextInt();
+		// read the newline after the int
+		scan.nextLine();
+		// text of the question
+		question.text = "";
+		String line;
+		
+		while (!(line = scan.nextLine()).trim().equals("-----")) {
+			question.text += line + "\n";
+		}
+		
+		while (scan.hasNextLine() && (line = scan.nextLine()).trim().length() > 0) {
+			
+			String[] parts = line.split("\\s*:\\s*");
+			
+			question.answers.put(parts[0], Integer.parseInt(parts[1]));
+		}
+		return question;
 	}
+
+	// question number
+	private int number;
+	// text of the question
+	private String text;
+	// possible answers
+	private Map<String,Integer> answers = new HashMap<String,Integer>();
 
 	/* Private instance variables */
 	// Add your own instance variables here
