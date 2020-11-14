@@ -35,13 +35,13 @@ public class AdvRoom {
 	// possible answers
 	private Map<String, Integer> answers = new HashMap<String, Integer>();
 
-	private ArrayList<String> description = new ArrayList<String>();
+	private String[] description;
 
 	private ArrayList<AdvObject> objectList = new ArrayList<AdvObject>();
 
 	private boolean visited;
 
-	private ArrayList<AdvMotionTableEntry> motionList = new ArrayList<AdvMotionTableEntry>();
+	private AdvMotionTableEntry[] motionList;
 
 	/* Method: getRoomNumber() */
 	/**
@@ -75,7 +75,7 @@ public class AdvRoom {
 	 * @return An array of strings giving the long description of the room
 	 */
 	public String[] getDescription() {
-		String[] d = description.<String>toArray(new String[this.description.size() + this.objectList.size()]);
+		String[] d = description;
 		int index = d.length - objectList.size();
 		for (AdvObject obj : objectList)
 			d[index++] = "There is " + obj.getDescription() + " here.";
@@ -172,7 +172,7 @@ public class AdvRoom {
 	 * @return The array of motion table entries associated with this room
 	 */
 	public AdvMotionTableEntry[] getMotionTable() {
-		return motionList.<AdvMotionTableEntry>toArray(new AdvMotionTableEntry[this.motionList.size()]);
+		return motionList;
 	}
 
 	/* Method: readFromFile(rd) */
@@ -186,45 +186,28 @@ public class AdvRoom {
 	 * @return a room if successfully read; null if at end of file
 	 */
 	public static AdvRoom readFromFile(Scanner scan) {
-		AdvRoom advRoom = new AdvRoom();
-		boolean complete = false;
-		String input = null;
-		advRoom.number = scan.nextInt();
-		scan.nextLine();
-		int count = 1;
-		while (scan.hasNext() && !scan.hasNextInt()) {
-			StringTokenizer st;
-			String[] parts;
-			int index, next;
-			input = scan.nextLine();
-			if (input.trim().length() == 0)
-				continue;
-			switch (count) {
-				case 1:
-					advRoom.text = input;
-					count++;
-				case 2:
-					if (input.startsWith("-----")) {
-						count++;
-						continue;
-					}
-					advRoom.description.add(input);
-				case 3:
-					st = new StringTokenizer(input, " /");
-					parts = new String[st.countTokens()];
-					index = 0;
-					while (st.hasMoreTokens())
-						parts[index++] = st.nextToken();
-					next = Integer.parseInt(parts[1]);
-					if (parts.length == 2) {
-						advRoom.motionList.add(new AdvMotionTableEntry(parts[0], next, null));
-					} else {
-						advRoom.motionList.add(new AdvMotionTableEntry(parts[0], next, parts[2]));
-					}
-					complete = true;
-			}
+		AdvRoom room = new AdvRoom();
+		room.number = scan.nextInt();
+		scan.nextLine(); // skip the new line after the room number
+		room.text = scan.nextLine();
+		// read the description (one line at the time)
+		ArrayList<String> list1 = new ArrayList<String>();
+		String line;
+		while (!(line = scan.nextLine()).trim().equals("-----")) {
+			list1.add(line);
 		}
-		return advRoom;
+		room.description = list1.toArray(new String[list1.size()]);
+		// read the motion table
+		ArrayList<AdvMotionTableEntry> list2 = new ArrayList<AdvMotionTableEntry>();
+		while (scan.hasNextLine() && !(line = scan.nextLine().trim()).equals("")) {
+			// split on \s+ (one or more spaces) or (written as |) /
+			String[] parts = line.split("\\s+|/");
+			String key = (parts.length == 3) ? parts[2] : null;
+			AdvMotionTableEntry entry = new AdvMotionTableEntry(parts[0], Integer.parseInt(parts[1]), key);
+			list2.add(entry);
+		}
+		room.motionList = list2.toArray(new AdvMotionTableEntry[list2.size()]);
+		return room;
 	}
 
 }
