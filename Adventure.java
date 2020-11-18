@@ -6,6 +6,7 @@
 
 import java.io.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 /* Class: Adventure */
 /**
@@ -16,6 +17,14 @@ public class Adventure extends AdventureStub {
 
 	// Use this scanner for any console input
 	private static Scanner scan = new Scanner(System.in);
+	
+	public static boolean testingmode = false;
+	public Map<String, AdvObject> inventory;
+	public Map<Integer, AdvRoom> rooms;
+	public Map<String, AdvCommand> commands;
+	public Map<String, String> symnonymes;
+	public Map<String, AdvObject> allobject;
+	public AdvRoom currentroom;
 
 	/**
 	 * This method is used only to test the program
