@@ -22,7 +22,6 @@ public class Adventure extends AdventureStub {
 	public Map<String, AdvObject> inventory;
 	public Map<Integer, AdvRoom> rooms;
 	public Map<String, AdvCommand> commands;
-	public Map<String, String> symnonymes;
 	public Map<String, AdvObject> allobject;
 	public AdvRoom currentroom;
 
