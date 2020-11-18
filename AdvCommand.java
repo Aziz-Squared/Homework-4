@@ -68,7 +68,6 @@ public abstract class AdvCommand {
 
 class QuitCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
-		println("Executing quit command... ");
 		game.executeQuitCommand();
 	}
 }
