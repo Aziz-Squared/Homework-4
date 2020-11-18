@@ -42,7 +42,33 @@ public class Adventure extends AdventureStub {
 	 *            The string indicating the direction of motion
 	 */
 	public void executeMotionCommand(String direction) {
-		super.executeMotionCommand(direction); // Replace with your code
+		 // Replace with your code
+			if(direction ==null || direction.isEmpty())throw new AssertionError(); // what the fuck has happened?
+		AdvMotionTableEntry result;
+		
+		AdvMotionTableEntry[] compass =this.currentroom.getMotionTable();
+		 
+		Boolean alldoesnotmatch = true;
+		for(AdvMotionTableEntry s : compass) {
+			if(s.getDirection().equals(direction)) {
+				if(s.getKeyName()!=null&&this.inventory.containsKey(s.getKeyName())) {
+						int destiny = s.getDestinationRoom();
+						this.transportToRoom(this.rooms.get(s.getDestinationRoom()));
+						alldoesnotmatch= false;
+						break;
+				}
+				if(s.getKeyName()==null) {
+					this.transportToRoom(this.rooms.get(s.getDestinationRoom()));
+					alldoesnotmatch= false;
+					break;
+				}
+			}
+		}
+		if(alldoesnotmatch)System.out.println("You cannot go there. ");	
+	}
+	
+	private void transportToRoom(AdvRoom advRoom) {
+		// TODO Auto-generated method stub 
 	}
 
 	/* Method: executeQuitCommand() */
@@ -52,7 +78,20 @@ public class Adventure extends AdventureStub {
 	 * the program should continue as usual.
 	 */
 	public void executeQuitCommand() {
-		super.executeQuitCommand(); // Replace with your code
+		 // Replace with your code
+		char temp ;
+		if(Adventure.scan.hasNextLine()&& !((temp = Adventure.scan.nextLine().toUpperCase().charAt(0))=='Y'))
+		{
+			
+			return;
+		}
+		//System.exit(0);
+		try {
+			System.out.println("Try to exist the game. ");
+			this.finalize();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	/* Method: executeHelpCommand() */
@@ -61,7 +100,18 @@ public class Adventure extends AdventureStub {
 	 * the user.
 	 */
 	public void executeHelpCommand() {
-		super.executeHelpCommand(); // Replace with your code
+		 // Replace with your code
+			for(AdvMotionTableEntry s :this.currentroom.getMotionTable()) {
+			String key = s.getKeyName()!=null?": "+s.getKeyName():"";
+			System.out.println(s.getDirection()+key);
+		}
+		if(this.currentroom.getObjectCount()>0) {
+		
+			for(int i = 0 ; i<this.currentroom.getObjectCount();i++)
+			{
+				System.out.println(this.currentroom.getObject(i).getDescription());
+			}
+		}
 	}
 
 	/* Method: executeLookCommand() */
@@ -70,7 +120,16 @@ public class Adventure extends AdventureStub {
 	 * of the room and its contents.
 	 */
 	public void executeLookCommand() {
-		super.executeLookCommand(); // Replace with your code
+		// Replace with your code
+			System.out.println(">>>"+this.currentroom.getName());
+		for(String s : this.currentroom.getDescription()) {
+			System.out.println("   "+s);
+		}
+		this.currentroom.setVisited(true);
+		this.handleForcedMotion();
+	}
+             private void handleForcedMotion() {
+		// TODO Auto-generated method stub
 	}
 
 	/* Method: executeInventoryCommand() */
@@ -79,7 +138,12 @@ public class Adventure extends AdventureStub {
 	 * what the user is carrying.
 	 */
 	public void executeInventoryCommand() {
-		super.executeInventoryCommand(); // Replace with your code
+		 // Replace with your code
+		for(Entry<String ,AdvObject> s : this.inventory.entrySet()) {
+			AdvObject temp= s.getValue();
+			System.out.println(temp.getName()+": "+temp.getDescription());
+		}
+	}
 	}
 
 	/* Method: executeTakeCommand(obj) */
@@ -91,7 +155,15 @@ public class Adventure extends AdventureStub {
 	 *            The AdvObject you want to take
 	 */
 	public void executeTakeCommand(AdvObject obj) {
-		super.executeTakeCommand(obj); // Replace with your code
+		// Replace with your code
+		if(obj==null||!this.currentroom.containsObject(obj)) {
+			System.out.println("I cannot find the object... "); }
+		else
+		{
+			this.currentroom.removeObject(obj);
+			this.inventory.put(obj.getName(), obj);
+			System.out.println(obj.getName()+" is added to inventory. ");
+		}
 	}
 
 	/* Method: executeDropCommand(obj) */
@@ -103,9 +175,25 @@ public class Adventure extends AdventureStub {
 	 *            The AdvObject you want to drop
 	 */
 	public void executeDropCommand(AdvObject obj) {
-		super.executeDropCommand(obj); // Replace with your code
+		 // Replace with your code
+			if(obj==null || !this.inventory.containsValue(obj))
+		{
+			System.out.println
+			(obj==null?"I cannot analyze the object you typed":"You don't have this object...");
+		}
+		else
+		{
+			this.currentroom.addObject(this.inventory.remove(obj.getName()));
+			System.out.println("The object is dropped to the current location...");
+		}
+	}
+		public void executeForcedCommand() {
+			this.handleForcedMotion();
+		}
+		// TODO Auto-generated method stub
+		
 	}
 
 	/* Private instance variables */
 	// Add your own instance variables here
-}
+
