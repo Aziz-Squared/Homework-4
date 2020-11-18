@@ -15,7 +15,9 @@
  */
 
 public abstract class AdvCommand {
-
+	
+	public static boolean testing = false;
+	
 	/** The predefined entry for the QUIT command */
 	public static final AdvCommand QUIT = new QuitCommand();
 
@@ -30,6 +32,17 @@ public abstract class AdvCommand {
 
 	/** The predefined entry for the DROP command */
 	public static final AdvCommand DROP = new DropCommand();
+	
+	/** The predefined entry for the HELP command */
+	public static final AdvCommand HELP = new HelpCommand();
+	
+	/** The predefined entry for the FORCED command */
+	public static final AdvCommand FORCED = new ForcedCommand();
+	
+	public static void println(String s)
+	{
+		if(AdvCommand.testing)System.out.println(s);
+	}
 
 	/* Abstract method: execute(game, obj) */
 	/**
@@ -55,6 +68,7 @@ public abstract class AdvCommand {
 
 class QuitCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
+		println("Executing quit command... ");
 		game.executeQuitCommand();
 	}
 }
@@ -66,6 +80,7 @@ class QuitCommand extends AdvCommand {
 
 class LookCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
+		println("Executing look command... ");
 		game.executeLookCommand();
 	}
 }
@@ -77,6 +92,7 @@ class LookCommand extends AdvCommand {
 
 class InventoryCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
+		println("Executing inventory command... ");
 		game.executeInventoryCommand();
 	}
 }
@@ -88,6 +104,7 @@ class InventoryCommand extends AdvCommand {
 
 class TakeCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
+		println("Executing take command... ");
 		game.executeTakeCommand(obj);
 	}
 }
@@ -99,6 +116,7 @@ class TakeCommand extends AdvCommand {
 
 class DropCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
+		println("Executing drop command...");
 		game.executeDropCommand(obj);
 	}
 }
@@ -111,5 +129,24 @@ class DropCommand extends AdvCommand {
 class HelpCommand extends AdvCommand {
 	public void execute(Adventure game, AdvObject obj) {
 		// Add your code here
+		System.out.println("If you think the game is too hard, just type (Q) to quit");
+		game.executeHelpCommand();
 	}
 }
+
+class ForcedCommand extends AdvCommand {
+	public void execute(Adventure game, AdvObject obj) {
+		game.executeForcedCommand();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
