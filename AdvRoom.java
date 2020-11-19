@@ -26,7 +26,7 @@ import java.util.*;
  * the initialized data structure.
  */
 
-public class AdvRoom extends AdvRoomStub {
+public class AdvRoom  {
 
 	 // room number
 	private int roomNumber;
@@ -233,4 +233,4 @@ public class AdvRoom extends AdvRoomStub {
 
 	/* Private instance variables */
 	// Add your own instance variables here
-}
+
