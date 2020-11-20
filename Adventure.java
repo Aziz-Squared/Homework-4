@@ -41,36 +41,60 @@ public class Adventure extends AdventureStub {
 	 */
 	public static void main(String[] args) {
 		//AdventureStub.main(args); // Replace with your code
-		Adventure adventure = null;
-					
+		Adventure adventure = new Adventure();
 		System.out.print("What will be your adventure today? ");
-		String game = scan.next();
-		if (game.toLowerCase().equals("crowther")) {
-			game = "CrowtherRooms.txt";
-		} else if (game.toLowerCase().equals("tiny")) {
-			game = "TinyRooms.txt";
-		} else if (game.toLowerCase().equals("small")) {
-			game = "SmallRooms.txt";
-		}
+		String gameName = scan.nextLine();
 		
-		try (Scanner scanner = new Scanner(new File(game))) {
-			adventure.setScanner(scanner);
-			AdvRoom currentroom = AdvRoom.readFromFile(scanner);
-			System.out.println(currentroom);
-			// first room  
-			AdvRoom currentRoom = adventure.rooms.get(adventure.rooms.firstKey());
-			while (true) {
-				System.out.print(currentRoom.getDescription());
-     			System.out.print("< ");
-//				String direction = scan.nextLine();
-//				
-//				AdvMotionTableEntry next = currentRoom.getMotionTable()[2];
-//				System.out.println(next);
+		// Reads the room file
+		String roomFile = gameName.substring(0, 1).toUpperCase() + gameName.substring(1) + "Rooms.txt";
+		
+		try {
+			Scanner scanner = new Scanner(new File(roomFile));
+			
+			while (scanner.hasNextInt()) {
+				AdvRoom a = AdvRoom.readFromFile(scanner);
+				adventure.rooms.put(a.getRoomNumber(), a);
 			}
-		} catch (FileNotFoundException e) {
-			System.out.println("Game could not be found. Sorry!");
+		} catch (IOException e) {
+			System.out.println("The room file" + roomFile + "could not be read.");
+			return;
 		}	
+		
+		// Reads the objects file
+		String objectFile = gameName.substring(0, 1).toUpperCase() + gameName.substring(1) + "Objects.txt";
+		
+		try {
+			Scanner scanner = new Scanner(new File(objectFile));
+			
+			while (scanner.hasNextLine()) {
+				AdvObject a = AdvObject.readFromFile(scanner);
+				if (a != null) {
+					adventure.rooms.get(a.getInitialLocation()).addObject(a);;
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("The object file" + objectFile + "could not be read.");
+			return;
+		}	
+		
+		// Reads the synonyms file
+		String synonymFile = gameName.substring(0, 1).toUpperCase() + gameName.substring(1) + "Synonyms.txt";
+		
+		try {
+			Scanner scanner = new Scanner(new File(synonymFile));
+			
+			String line;
+			while (scanner.hasNextLine() && (line = scanner.nextLine().trim()).length() > 0) {
+				String[] parts = line.split("=");
+				adventure.synonyms.put(parts[0], parts[1]);
+			}
+		} catch (IOException e) {
+			System.out.println("The synonyms file" + synonymFile + "could not be read.");
+			return;
+		}	
+		adventure.run();
 	}
+
 
 	/* Method: executeMotionCommand(direction) */
 	/**
