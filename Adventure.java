@@ -34,11 +34,6 @@ public class Adventure extends AdventureStub {
 		scan = theScanner;
 		// Delete the following line when done
 		//AdventureStub.setScanner(theScanner);
-		
-		while (scan.hasNextInt()) {
-			AdvRoom a = AdvRoom.readFromFile(scan);
-			adventure.room.put(a.getRoomNumber(), a);
-		}
 	}
 
 	/**
