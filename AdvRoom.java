@@ -78,7 +78,17 @@ public class AdvRoom  {
 	 * @return An array of strings giving the long description of the room
 	 */
 	public String[] getDescription() {
-		return description;
+		int n = 0;
+		String[] d = new String[description.length + objects.size()];
+		
+		for (String s : description) {
+			d [n++] = s;
+		}
+		//foreach object, add it to the description of the room
+		for (AdvObject o : objects) {
+			d [n++] = "There is a " + o.getDescription() + " here.";
+		}
+		return d;
 		//return super.getDescription(); // Replace with your code
 	}
 
