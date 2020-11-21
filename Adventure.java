@@ -92,7 +92,7 @@ public class Adventure extends AdventureStub {
 
 	// Run the game
 	public void run() {
-		currentRoom = rooms.get(rooms.firstKey());
+		this.currentRoom = this.rooms.get(rooms.firstKey());
 
 		// loop
 		while (true) {
@@ -172,7 +172,7 @@ public class Adventure extends AdventureStub {
 	 * user.
 	 */
 	public void executeHelpCommand() {
-		super.executeHelpCommand(); // Replace with your code
+		System.out.println("Commands: ");
 	}
 
 	/* Method: executeLookCommand() */

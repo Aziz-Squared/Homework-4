@@ -29,19 +29,19 @@ import java.util.*;
 public class AdvRoom {
 
 	// question number
-	int roomNumber;
+	private int roomNumber;
 	// text of the question
-	String name;
+	private String name;
 	// possible answers
 	private Map<String, Integer> answers = new HashMap<String, Integer>();
 
-	String[] description;
+	private String[] description;
 
 	private ArrayList<AdvObject> objectList = new ArrayList<AdvObject>();
 
 	private boolean visited;
 
-	AdvMotionTableEntry[] motionList;
+	private AdvMotionTableEntry[] motionList;
 
 	/* Method: getRoomNumber() */
 	/**
@@ -113,7 +113,7 @@ public class AdvRoom {
 	 * @return true if the object is in the room, and false otherwise
 	 */
 	public boolean containsObject(AdvObject object) {
-		return objectList.contains(object);
+		return this.objectList.contains(object);
 	}
 
 	/* Method: getObjectCount() */
@@ -124,7 +124,7 @@ public class AdvRoom {
 	 * @return The number of objects in the room
 	 */
 	public int getObjectCount() {
-		return objectList.size();
+		return this.objectList.size();
 	}
 
 	/* Method: getObject(index) */
@@ -159,7 +159,7 @@ public class AdvRoom {
 	 * @return true if the room has been visited; false otherwise
 	 */
 	public boolean hasBeenVisited() {
-		return visited;
+		return this.visited;
 	}
 
 	/* Method: getMotionTable() */
@@ -172,7 +172,7 @@ public class AdvRoom {
 	 * @return The array of motion table entries associated with this room
 	 */
 	public AdvMotionTableEntry[] getMotionTable() {
-		return motionList;
+		return this.motionList;
 	}
 
 	/* Method: readFromFile(rd) */
