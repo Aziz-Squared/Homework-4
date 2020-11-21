@@ -29,19 +29,19 @@ import java.util.*;
 public class AdvRoom {
 
 	// question number
-	private int number;
+	int roomNumber;
 	// text of the question
-	private String text;
+	String name;
 	// possible answers
 	private Map<String, Integer> answers = new HashMap<String, Integer>();
 
-	private String[] description;
+	String[] description;
 
 	private ArrayList<AdvObject> objectList = new ArrayList<AdvObject>();
 
 	private boolean visited;
 
-	private AdvMotionTableEntry[] motionList;
+	AdvMotionTableEntry[] motionList;
 
 	/* Method: getRoomNumber() */
 	/**
@@ -52,7 +52,7 @@ public class AdvRoom {
 	 */
 
 	public int getRoomNumber() {
-		return number;
+		return roomNumber;
 	}
 
 	/* Method: getName() */
@@ -63,7 +63,7 @@ public class AdvRoom {
 	 * @return The room name
 	 */
 	public String getName() {
-		return text; // Replace with your code
+		return name; // Replace with your code
 	}
 
 	/* Method: getDescription() */
@@ -187,9 +187,9 @@ public class AdvRoom {
 	 */
 	public static AdvRoom readFromFile(Scanner scan) {
 		AdvRoom room = new AdvRoom();
-		room.number = scan.nextInt();
+		room.roomNumber = scan.nextInt();
 		scan.nextLine(); // skip the new line after the room number
-		room.text = scan.nextLine();
+		room.name = scan.nextLine();
 		// read the description (one line at the time)
 		ArrayList<String> list1 = new ArrayList<String>();
 		String line;

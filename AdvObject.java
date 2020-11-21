@@ -6,6 +6,9 @@
  */
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /* Class: AdvObject */
@@ -26,10 +29,8 @@ import java.util.Scanner;
 public class AdvObject {
 
 	private String name;
-
 	private String description;
-
-	private int initialLocation;
+	private int initialRoomLocation;
 
 	/* Method: getName() */
 	/**
@@ -63,7 +64,7 @@ public class AdvObject {
 	 * @return The room number in which the object initially resides
 	 */
 	public int getInitialLocation() {
-		return initialLocation;
+		return initialRoomLocation;
 	}
 
 	/* Method: readFromFile(scan) */
@@ -78,22 +79,20 @@ public class AdvObject {
 	 * @return the object if an object is successfully read; null at end of file
 	 */
 	public static AdvObject readFromFile(Scanner scan) {
-		AdvObject advObject = new AdvObject();
-		String input = null;
-
-		advObject.name = scan.next();
-		while (scan.hasNext() && !scan.hasNextInt()) {
-			input = scan.nextLine();
-			if (input.trim().length() > 0)
-				advObject.description = input;
+		// Position the scanner on the first non blank line
+		String line = null;
+		while (scan.hasNextLine()
+				&& (line = scan.nextLine().trim()).length() == 0)
+			;
+		if (line != null && line.length() > 0) {
+			AdvObject obj = new AdvObject();
+			obj.name = line;
+			obj.description = scan.nextLine();
+			obj.initialRoomLocation = scan.nextInt();
+			return obj;
+		} else {
+			return null;
 		}
-		advObject.initialLocation = scan.nextInt();
-
-		if (advObject.name != null && advObject.name.length() > 0 && advObject.description != null
-				&& advObject.description.length() > 0 && advObject.initialLocation > 0)
-			return advObject;
-
-		return advObject;
 
 	}
 
