@@ -89,13 +89,13 @@ public class Adventure extends AdventureStub {
 		// Run the adventure
 		game.run();
 	}
-
+	
 	// Run the game
 	public void run() {
-		this.currentRoom = this.rooms.get(rooms.firstKey());
-
+		currentRoom = rooms.get(rooms.firstKey());
+		
 		// loop
-		while (true) {
+		while (true) {currentRoom = rooms.get(rooms.firstKey());
 			// ask for a command
 			System.out.print("> ");
 			String command = scan.nextLine().trim().toUpperCase();
@@ -136,6 +136,10 @@ public class Adventure extends AdventureStub {
 				cmd.execute(this, obj);
 			}
 		}
+	}
+
+	public void loadFiles(String name){
+
 	}
 
 	/* Method: executeMotionCommand(direction) */
@@ -193,7 +197,13 @@ public class Adventure extends AdventureStub {
 	 * the user is carrying.
 	 */
 	public void executeInventoryCommand() {
-		super.executeInventoryCommand(); // Replace with your code
+		if(inventory.size() > 0){
+			for(AdvObject obj : this.inventory){
+				System.out.println(obj.getName() + " : " + obj.getDescription());
+			}
+		}else{
+			System.out.println("No items in inventory");
+		}
 	}
 
 	/* Method: executeTakeCommand(obj) */
@@ -204,7 +214,14 @@ public class Adventure extends AdventureStub {
 	 * @param obj The AdvObject you want to take
 	 */
 	public void executeTakeCommand(AdvObject obj) {
-		super.executeTakeCommand(obj); // Replace with your code
+		if(this.currentRoom.containsObject(obj)){
+			this.inventory.add(obj);
+			this.currentRoom.removeObject(obj);
+			System.out.println("You picked up: " + obj.getName());
+		}else{
+			System.out.println("That item doesn't exsist");
+		}
+		
 	}
 
 	/* Method: executeDropCommand(obj) */
@@ -215,7 +232,13 @@ public class Adventure extends AdventureStub {
 	 * @param obj The AdvObject you want to drop
 	 */
 	public void executeDropCommand(AdvObject obj) {
-		super.executeDropCommand(obj); // Replace with your code
+		if(this.inventory.contains(obj)){
+			this.currentRoom.addObject(obj);
+			this.inventory.remove(obj);
+			System.out.println("You dropped: " + obj.getName());
+		}else{
+			System.out.println("You don't have that item");
+		}
 	}
 
 	/* Private instance variables */

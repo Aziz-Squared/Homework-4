@@ -52,7 +52,7 @@ public class AdvRoom {
 	 */
 
 	public int getRoomNumber() {
-		return roomNumber;
+		return this.roomNumber;
 	}
 
 	/* Method: getName() */
@@ -63,7 +63,7 @@ public class AdvRoom {
 	 * @return The room name
 	 */
 	public String getName() {
-		return name; // Replace with your code
+		return this.name; // Replace with your code
 	}
 
 	/* Method: getDescription() */
@@ -186,17 +186,17 @@ public class AdvRoom {
 	 * @return a room if successfully read; null if at end of file
 	 */
 	public static AdvRoom readFromFile(Scanner scan) {
-		AdvRoom room = new AdvRoom();
-		room.roomNumber = scan.nextInt();
+		AdvRoom roomLoad = new AdvRoom();
+		roomLoad.roomNumber = scan.nextInt();
 		scan.nextLine(); // skip the new line after the room number
-		room.name = scan.nextLine();
+		roomLoad.name = scan.nextLine();
 		// read the description (one line at the time)
 		ArrayList<String> list1 = new ArrayList<String>();
 		String line;
 		while (!(line = scan.nextLine()).trim().equals("-----")) {
 			list1.add(line);
 		}
-		room.description = list1.toArray(new String[list1.size()]);
+		roomLoad.description = list1.toArray(new String[list1.size()]);
 		// read the motion table
 		ArrayList<AdvMotionTableEntry> list2 = new ArrayList<AdvMotionTableEntry>();
 		while (scan.hasNextLine() && !(line = scan.nextLine().trim()).equals("")) {
@@ -206,8 +206,8 @@ public class AdvRoom {
 			AdvMotionTableEntry entry = new AdvMotionTableEntry(parts[0], Integer.parseInt(parts[1]), key);
 			list2.add(entry);
 		}
-		room.motionList = list2.toArray(new AdvMotionTableEntry[list2.size()]);
-		return room;
+		roomLoad.motionList = list2.toArray(new AdvMotionTableEntry[list2.size()]);
+		return roomLoad;
 	}
 
 }
