@@ -186,17 +186,17 @@ public class AdvRoom {
 	 * @return a room if successfully read; null if at end of file
 	 */
 	public static AdvRoom readFromFile(Scanner scan) {
-		AdvRoom roomLoad = new AdvRoom();
-		roomLoad.roomNumber = scan.nextInt();
+		AdvRoom room = new AdvRoom();
+		room.roomNumber = scan.nextInt();
 		scan.nextLine(); // skip the new line after the room number
-		roomLoad.name = scan.nextLine();
+		room.name = scan.nextLine();
 		// read the description (one line at the time)
 		ArrayList<String> list1 = new ArrayList<String>();
 		String line;
 		while (!(line = scan.nextLine()).trim().equals("-----")) {
 			list1.add(line);
 		}
-		roomLoad.description = list1.toArray(new String[list1.size()]);
+		room.description = list1.toArray(new String[list1.size()]);
 		// read the motion table
 		ArrayList<AdvMotionTableEntry> list2 = new ArrayList<AdvMotionTableEntry>();
 		while (scan.hasNextLine() && !(line = scan.nextLine().trim()).equals("")) {
@@ -206,8 +206,8 @@ public class AdvRoom {
 			AdvMotionTableEntry entry = new AdvMotionTableEntry(parts[0], Integer.parseInt(parts[1]), key);
 			list2.add(entry);
 		}
-		roomLoad.motionList = list2.toArray(new AdvMotionTableEntry[list2.size()]);
-		return roomLoad;
+		room.motionList = list2.toArray(new AdvMotionTableEntry[list2.size()]);
+		return room;
 	}
 
 }

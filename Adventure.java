@@ -16,6 +16,7 @@ public class Adventure extends AdventureStub {
 
 	private SortedMap<Integer, AdvRoom> rooms = new TreeMap<Integer, AdvRoom>();
 	private List<AdvObject> inventory = new ArrayList<AdvObject>();
+	private Map<String, AdvObject> objects = new HashMap<String, AdvObject>();
 	private Map<String, String> synonyms = new HashMap<String, String>();
 	private boolean quit;
 
@@ -89,13 +90,14 @@ public class Adventure extends AdventureStub {
 		// Run the adventure
 		game.run();
 	}
-	
+
 	// Run the game
 	public void run() {
-		currentRoom = rooms.get(rooms.firstKey());
-		
+		this.currentRoom = this.rooms.get(this.rooms.firstKey());
+
 		// loop
-		while (true) {currentRoom = rooms.get(rooms.firstKey());
+		while (true) {
+			currentRoom = rooms.get(rooms.firstKey());
 			// ask for a command
 			System.out.print("> ");
 			String command = scan.nextLine().trim().toUpperCase();
@@ -138,10 +140,6 @@ public class Adventure extends AdventureStub {
 		}
 	}
 
-	public void loadFiles(String name){
-
-	}
-
 	/* Method: executeMotionCommand(direction) */
 	/**
 	 * Executes a motion command. This method is called from the AdvMotionCommand
@@ -150,7 +148,48 @@ public class Adventure extends AdventureStub {
 	 * @param direction The string indicating the direction of motion
 	 */
 	public void executeMotionCommand(String direction) {
-		super.executeMotionCommand(direction); // Replace with your code
+
+		AdvMotionTableEntry[] compass = this.currentRoom.getMotionTable();
+
+		Boolean alldoesnotmatch = true;
+		for (AdvMotionTableEntry s : compass) {
+			if (s.getDirection().equals(direction)) {
+				if (s.getKeyName() != null && this.objects.containsKey(s.getKeyName())) {
+					
+					// this.transportToRoom(this.rooms.get(s.getDestinationRoom()));
+					this.currentRoom = this.rooms.get(s.getDestinationRoom());
+					alldoesnotmatch = false;
+					break;
+				}
+				// if (s.getKeyName() == null) {
+				// 	this.transportToRoom(this.rooms.get(s.getDestinationRoom()));
+				// 	alldoesnotmatch = false;
+				// 	break;
+				// }
+			}
+		}
+		if (alldoesnotmatch)
+			System.out.println("You cannot go there. ");
+
+		// AdvMotionTableEntry[] motionTable = this.currentRoom.getMotionTable();
+
+		// AdvMotionTableEntry[] temp = motionTable;
+		// for(int i = 0; i < temp.length; i++){
+		// AdvMotionTableEntry currentLocation = temp[i];
+		// String currentLocationDirection = currentLocation.getDirection();
+		// if(this.synonyms.containsKey(currentLocationDirection)){
+		// currentLocationDirection = this.synonyms.get(currentLocationDirection);
+		// }
+		// if(currentLocationDirection.equals(direction) &&
+		// this.inventory.contains(this.objects.get((currentLocation.getKeyName())))){
+		// this.currentRoom =
+		// this.rooms.get(Integer.valueOf(currentLocation.getDestinationRoom()));
+		// }
+		// }
+
+	}
+
+	private void transportToRoom(AdvRoom advRoom) {
 	}
 
 	/* Method: executeQuitCommand() */
@@ -197,11 +236,11 @@ public class Adventure extends AdventureStub {
 	 * the user is carrying.
 	 */
 	public void executeInventoryCommand() {
-		if(inventory.size() > 0){
-			for(AdvObject obj : this.inventory){
+		if (inventory.size() > 0) {
+			for (AdvObject obj : this.inventory) {
 				System.out.println(obj.getName() + " : " + obj.getDescription());
 			}
-		}else{
+		} else {
 			System.out.println("No items in inventory");
 		}
 	}
@@ -214,14 +253,14 @@ public class Adventure extends AdventureStub {
 	 * @param obj The AdvObject you want to take
 	 */
 	public void executeTakeCommand(AdvObject obj) {
-		if(this.currentRoom.containsObject(obj)){
+		if (this.currentRoom.containsObject(obj)) {
 			this.inventory.add(obj);
 			this.currentRoom.removeObject(obj);
 			System.out.println("You picked up: " + obj.getName());
-		}else{
+		} else {
 			System.out.println("That item doesn't exsist");
 		}
-		
+
 	}
 
 	/* Method: executeDropCommand(obj) */
@@ -232,11 +271,11 @@ public class Adventure extends AdventureStub {
 	 * @param obj The AdvObject you want to drop
 	 */
 	public void executeDropCommand(AdvObject obj) {
-		if(this.inventory.contains(obj)){
+		if (this.inventory.contains(obj)) {
 			this.currentRoom.addObject(obj);
 			this.inventory.remove(obj);
 			System.out.println("You dropped: " + obj.getName());
-		}else{
+		} else {
 			System.out.println("You don't have that item");
 		}
 	}
