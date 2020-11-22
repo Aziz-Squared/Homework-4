@@ -19,7 +19,7 @@ public class Adventure extends AdventureStub {
 	private static Scanner scan = new Scanner(System.in);
 	
 	public static boolean testingmode = false;
-	public Map<String, AdvObject> inventory;
+	public ArrayList <AdvObject> inventory;
 	public Map<Integer, AdvRoom> rooms;
 	public Map<String, AdvCommand> commands;
 	public Map<String, AdvObject> allobject;
@@ -201,12 +201,13 @@ public class Adventure extends AdventureStub {
 	 * what the user is carrying.
 	 */
 	public void executeInventoryCommand() {
-		 // Replace with your code
-		for(Entry<String ,AdvObject> s : this.inventory.entrySet()) {
-			AdvObject temp= s.getValue();
-			System.out.println(temp.getName()+": "+temp.getDescription());
+		if (inventory.isEmpty()) {
+			System.out.println("You are empty-handed.");
 		}
-	}
+		 // Replace with your code
+		for(AdvObject s : inventory) {
+			System.out.println(s.getName()+": "+s.getDescription());
+		}
 	}
 
 	/* Method: executeTakeCommand(obj) */
@@ -224,8 +225,8 @@ public class Adventure extends AdventureStub {
 		else
 		{
 			this.currentroom.removeObject(obj);
-			this.inventory.put(obj.getName(), obj);
-			System.out.println(obj.getName()+" is added to inventory. ");
+			this.inventory.add(obj);
+			System.out.println("Taken.");
 		}
 	}
 
@@ -247,7 +248,7 @@ public class Adventure extends AdventureStub {
 		else
 		{
 			this.currentroom.addObject(this.inventory.remove(obj.getName()));
-			System.out.println("The object is dropped to the current location...");
+			System.out.println("Dropped.");
 		}
 	}
 		public void executeForcedCommand() {
