@@ -13,19 +13,14 @@ import java.util.Map.Entry;
  * This class is the main program class for the Adventure game.
  */
 
-public class Adventure extends AdventureStub {
-
-	// Use this scanner for any console input
+public class Adventure {
+	
+	private SortedMap<Integer,AdvRoom> rooms = new TreeMap<Integer,AdvRoom>();
+	private ArrayList<AdvObject> inventory = new ArrayList<AdvObject>();
+	private Map<String,String> synonyms = new HashMap<String,String>();
+	AdvRoom currentRoom;
 	private static Scanner scan = new Scanner(System.in);
-	
-	public static boolean testingmode = false;
-	public ArrayList <AdvObject> inventory;
-	public Map<Integer, AdvRoom> rooms;
-	public Map<String, AdvCommand> commands;
-	public Map<String, AdvObject> allobject;
-	public AdvRoom currentroom;
-	
-	public  SortedMap<Integer,AdvRoom> room = new TreeMap<Integer,AdvRoom>();
+	private boolean quit;
 
 	/**
 	 * This method is used only to test the program
@@ -43,7 +38,7 @@ public class Adventure extends AdventureStub {
 		//AdventureStub.main(args); // Replace with your code
 		Adventure adventure = new Adventure();
 		System.out.print("What will be your adventure today? ");
-		String gameName = scan.nextLine();
+		String gameName = scan.nextLine().trim();
 		
 		// Reads the room file
 		String roomFile = gameName.substring(0, 1).toUpperCase() + gameName.substring(1) + "Rooms.txt";
@@ -105,34 +100,22 @@ public class Adventure extends AdventureStub {
 	 *            The string indicating the direction of motion
 	 */
 	public void executeMotionCommand(String direction) {
-		 // Replace with your code
-			if(direction ==null || direction.isEmpty())throw new AssertionError(); // what the fuck has happened?
-		AdvMotionTableEntry result;
-		
-		AdvMotionTableEntry[] compass =this.currentroom.getMotionTable();
-		 
-		Boolean alldoesnotmatch = true;
-		for(AdvMotionTableEntry s : compass) {
-			if(s.getDirection().equals(direction)) {
-				if(s.getKeyName()!=null&&this.inventory.containsKey(s.getKeyName())) {
-						int destiny = s.getDestinationRoom();
-						this.transportToRoom(this.rooms.get(s.getDestinationRoom()));
-						alldoesnotmatch= false;
-						break;
-				}
-				if(s.getKeyName()==null) {
-					this.transportToRoom(this.rooms.get(s.getDestinationRoom()));
-					alldoesnotmatch= false;
-					break;
-				}
+		 int destinationRoom = 0;
+		AdvMotionTableEntry[] table = currentRoom.getMotionTable();
+		for (AdvMotionTableEntry t : table) {
+			if (t.getDirection().equals(direction) || t.getDirection().equals("FORCED")) {
+				destinationRoom = t.getDestinationRoom();
+				currentRoom = rooms.get(destinationRoom); 
 			}
 		}
-		if(alldoesnotmatch)System.out.println("You cannot go there. ");	
+		String[] descriptionArray = currentRoom.getDescription();
+		for (int i = 0; i < descriptionArray.length; i++) {
+			System.out.println(descriptionArray[i]);
+		}		
+		//super.executeMotionCommand(direction); // Replace with your code
 	}
 	
-	private void transportToRoom(AdvRoom advRoom) {
-		// TODO Auto-generated method stub 
-	}
+	
 
 	/* Method: executeQuitCommand() */
 	/**
@@ -141,20 +124,14 @@ public class Adventure extends AdventureStub {
 	 * the program should continue as usual.
 	 */
 	public void executeQuitCommand() {
-		 // Replace with your code
-		char temp ;
-		if(Adventure.scan.hasNextLine()&& !((temp = Adventure.scan.nextLine().toUpperCase().charAt(0))=='Y'))
-		{
-			
-			return;
+		System.out.print("Are you sure (Y/N)? ");
+		String answer = scan.nextLine().trim().toUpperCase();
+		if (answer.equals("Y")) {
+			quit = true;
+		} else if (answer.equals("N")){
+			quit = false;
 		}
-		//System.exit(0);
-		try {
-			System.out.println("Try to exist the game. ");
-			this.finalize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
+		//super.executeQuitCommand(); // Replace with your code
 	}
 
 	/* Method: executeHelpCommand() */
@@ -183,17 +160,13 @@ public class Adventure extends AdventureStub {
 	 * of the room and its contents.
 	 */
 	public void executeLookCommand() {
-		// Replace with your code
-			System.out.println(">>>"+this.currentroom.getName());
-		for(String s : this.currentroom.getDescription()) {
-			System.out.println("   "+s);
-		}
-		this.currentroom.setVisited(true);
-		this.handleForcedMotion();
+		String[] descriptionArray = currentRoom.getDescription();
+		for (int i = 0; i < descriptionArray.length; i++) {
+			System.out.println(descriptionArray[i]);
+		}	
+		//super.executeLookCommand(); // Replace with your code
 	}
-             private void handleForcedMotion() {
-		// TODO Auto-generated method stub
-	}
+	
 
 	/* Method: executeInventoryCommand() */
 	/**
@@ -219,15 +192,14 @@ public class Adventure extends AdventureStub {
 	 *            The AdvObject you want to take
 	 */
 	public void executeTakeCommand(AdvObject obj) {
-		// Replace with your code
-		if(obj==null||!this.currentroom.containsObject(obj)) {
-			System.out.println("I cannot find the object... "); }
-		else
-		{
-			this.currentroom.removeObject(obj);
-			this.inventory.add(obj);
+		if (currentRoom.containsObject(obj)) {
+			inventory.add(obj);
+			currentRoom.removeObject(obj);
 			System.out.println("Taken.");
+		} else {
+			System.out.println("I don't see any " + obj.getName() + ".");
 		}
+		//super.executeTakeCommand(obj); // Replace with your code
 	}
 
 	/* Method: executeDropCommand(obj) */
@@ -239,23 +211,14 @@ public class Adventure extends AdventureStub {
 	 *            The AdvObject you want to drop
 	 */
 	public void executeDropCommand(AdvObject obj) {
-		 // Replace with your code
-			if(obj==null || !this.inventory.containsValue(obj))
-		{
-			System.out.println
-			(obj==null?"I cannot analyze the object you typed":"You don't have this object...");
-		}
-		else
-		{
-			this.currentroom.addObject(this.inventory.remove(obj.getName()));
+		 if (inventory.contains(obj)) {
+			inventory.remove(obj);
+			currentRoom.addObject(obj);
 			System.out.println("Dropped.");
+		} else {
+			System.out.println("You don't have any " + obj.getName() + " to drop.");
 		}
-	}
-		public void executeForcedCommand() {
-			this.handleForcedMotion();
-		}
-		// TODO Auto-generated method stub
-		
+		//super.executeDropCommand(obj); // Replace with your code
 	}
 
 	/* Private instance variables */
